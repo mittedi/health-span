@@ -74,14 +74,26 @@
         .date-nav {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
             padding: 10px 16px;
             background: var(--bg);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 46px;
             z-index: 9;
+        }
+
+        .date-nav-side {
+            flex: 0 0 36px;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-nav-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .date-nav button {
@@ -110,11 +122,11 @@
         #today-btn.hidden { visibility: hidden; }
 
         #settings-btn {
-            margin-left: auto;
             border: none !important;
-            padding: 6px 8px !important;
-            font-size: 1rem !important;
+            padding: 4px !important;
+            font-size: 1.1rem !important;
             color: var(--text-muted) !important;
+            background: none !important;
         }
 
         /* MAIN */
@@ -324,11 +336,16 @@
 </nav>
 
 <div class="date-nav">
-    <button onclick="changeDate(-1)">&#8249;</button>
-    <span id="date-nav-label"></span>
-    <button onclick="changeDate(1)">&#8250;</button>
-    <button id="today-btn" class="hidden" onclick="goToday()">I dag</button>
-    <button id="settings-btn" onclick="toggleSettings()" title="Backup">&#9881;</button>
+    <div class="date-nav-side"></div>
+    <div class="date-nav-center">
+        <button onclick="changeDate(-1)">&#8249;</button>
+        <span id="date-nav-label"></span>
+        <button onclick="changeDate(1)">&#8250;</button>
+        <button id="today-btn" class="hidden" onclick="goToday()">I dag</button>
+    </div>
+    <div class="date-nav-side" style="justify-content:flex-end">
+        <button id="settings-btn" onclick="toggleSettings()" title="Backup">&#9881;</button>
+    </div>
 </div>
 
 <div id="settings-panel">
