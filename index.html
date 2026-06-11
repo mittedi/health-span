@@ -335,7 +335,8 @@
 <nav>
     <button class="active" onclick="showView('morgenmad')">Morgenmad</button>
     <button onclick="showView('frokost')">Frokost</button>
-    <button onclick="showView('eftermiddag')">Eftermiddag</button>
+    <button onclick="showView('snack')">Snack</button>
+    <button onclick="showView('aftensmad')">Aftensmad</button>
 </nav>
 
 <div class="date-nav">
@@ -375,6 +376,7 @@
                 <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Ingen reaktion</div>
                 <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Oppustethed</div>
                 <div class="chip" data-val="luft" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Trykkende følelse</div>
                 <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Let ubehag</div>
                 <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Smerter</div>
                 <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Kramper</div>
@@ -415,6 +417,7 @@
                 <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Ingen reaktion</div>
                 <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Oppustethed</div>
                 <div class="chip" data-val="luft" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Trykkende følelse</div>
                 <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Let ubehag</div>
                 <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Smerter</div>
                 <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Kramper</div>
@@ -442,26 +445,27 @@
         </div>
     </div>
 
-    <!-- EFTERMIDDAG -->
-    <div class="view" id="view-eftermiddag">
+    <!-- SNACK -->
+    <div class="view" id="view-snack">
         <div class="section">
-            <div class="section-label">Eftermiddag <span class="save-dot" id="dot-eftermiddag"></span></div>
-            <textarea class="food-input" id="eftermiddag-mad" placeholder="Hvad spiste/drak du om eftermiddagen?"></textarea>
+            <div class="section-label">Snack <span class="save-dot" id="dot-snack"></span></div>
+            <textarea class="food-input" id="snack-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
 
         <div class="section">
             <div class="section-label">Fysisk reaktion</div>
-            <div class="chip-group" id="eftermiddag-reaktioner">
-                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Ingen reaktion</div>
-                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Oppustethed</div>
-                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Luft/gasser</div>
-                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Let ubehag</div>
-                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Smerter</div>
-                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Kramper</div>
-                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Kvalme</div>
-                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Halsbrand</div>
-                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Træthed</div>
-                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Hævelse</div>
+            <div class="chip-group" id="snack-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Trykkende følelse</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Hævelse</div>
             </div>
         </div>
 
@@ -469,16 +473,57 @@
 
         <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
-            <div class="bristol-row" id="eftermiddag-bristol">
-                <button class="bristol-btn" data-t="1" onclick="selectBristol('eftermiddag',1)">1</button>
-                <button class="bristol-btn" data-t="2" onclick="selectBristol('eftermiddag',2)">2</button>
-                <button class="bristol-btn" data-t="3" onclick="selectBristol('eftermiddag',3)">3</button>
-                <button class="bristol-btn" data-t="4" onclick="selectBristol('eftermiddag',4)">4</button>
-                <button class="bristol-btn" data-t="5" onclick="selectBristol('eftermiddag',5)">5</button>
-                <button class="bristol-btn" data-t="6" onclick="selectBristol('eftermiddag',6)">6</button>
-                <button class="bristol-btn" data-t="7" onclick="selectBristol('eftermiddag',7)">7</button>
+            <div class="bristol-row" id="snack-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('snack',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('snack',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('snack',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('snack',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('snack',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('snack',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('snack',7)">7</button>
             </div>
-            <div class="bristol-hint" id="eftermiddag-bristol-hint"></div>
+            <div class="bristol-hint" id="snack-bristol-hint"></div>
+        </div>
+    </div>
+
+    <!-- AFTENSMAD -->
+    <div class="view" id="view-aftensmad">
+        <div class="section">
+            <div class="section-label">Aftensmad <span class="save-dot" id="dot-aftensmad"></span></div>
+            <textarea class="food-input" id="aftensmad-mad" placeholder="Hvad spiste du til aftensmad?"></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-label">Fysisk reaktion</div>
+            <div class="chip-group" id="aftensmad-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Trykkende følelse</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Hævelse</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <div class="section-label">Bristol Stool Scale</div>
+            <div class="bristol-row" id="aftensmad-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('aftensmad',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('aftensmad',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('aftensmad',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('aftensmad',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('aftensmad',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('aftensmad',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('aftensmad',7)">7</button>
+            </div>
+            <div class="bristol-hint" id="aftensmad-bristol-hint"></div>
         </div>
     </div>
 
@@ -495,7 +540,7 @@
         7: 'Vandigt — diarré'
     };
 
-    const MEALS = ['morgenmad', 'frokost', 'eftermiddag'];
+    const MEALS = ['morgenmad', 'frokost', 'snack', 'aftensmad'];
     const KEY_PREFIX = 'longevity-';
 
     let currentDate = dateStr(new Date());
