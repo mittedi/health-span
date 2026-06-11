@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Longevity</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-input: #252525;
+            --border: #333;
+            --text: #d4d0c8;
+            --text-muted: #7a7568;
+            --teal: #4a9a8a;
+            --teal-dim: #2d6a5e;
+            --green: #5c8a5c;
+            --red: #8a4a4a;
+            --amber: #c8a45c;
+            --orange: #a06a3a;
+            --sans: -apple-system, "Helvetica Neue", sans-serif;
+            --mono: "SF Mono", "Menlo", "Consolas", monospace;
+            --radius: 8px;
+        }
+
+        html { font-size: 16px; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav button {
+            flex: 1;
+            padding: 14px 8px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        nav button.active {
+            color: var(--teal);
+            border-bottom-color: var(--teal);
+        }
+
+        /* DATE NAV */
+        .date-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 46px;
+            z-index: 9;
+        }
+
+        .date-nav button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+
+        .date-nav button:active { background: var(--bg-input); }
+
+        #date-nav-label {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--text);
+            letter-spacing: 0.03em;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        #today-btn { border-color: var(--teal-dim) !important; color: var(--teal) !important; }
+        #today-btn.hidden { visibility: hidden; }
+
+        #settings-btn {
+            margin-left: auto;
+            border: none !important;
+            padding: 6px 8px !important;
+            font-size: 1rem !important;
+            color: var(--text-muted) !important;
+        }
+
+        /* MAIN */
+        main {
+            flex: 1;
+            padding: 24px 16px 100px;
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* SECTIONS */
+        .section { margin-bottom: 28px; }
+
+        .section-label {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        /* FOOD INPUT */
+        textarea.food-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            outline: none;
+            resize: none;
+            min-height: 72px;
+            transition: border-color 0.2s;
+            line-height: 1.5;
+        }
+
+        textarea.food-input:focus { border-color: var(--teal-dim); }
+        textarea.food-input::placeholder { color: var(--text-muted); }
+
+        /* CHIPS */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .chip:active { opacity: 0.7; }
+
+        .chip.active {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: rgba(74, 154, 138, 0.12);
+        }
+
+        .chip.ingen.active {
+            border-color: var(--green);
+            color: #80c080;
+            background: rgba(92, 138, 92, 0.12);
+        }
+
+        /* SAVE DOT */
+        .save-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            vertical-align: middle;
+        }
+
+        .save-dot.visible { opacity: 1; }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0 28px;
+        }
+
+        /* BRISTOL */
+        .bristol-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .bristol-btn {
+            flex: 1;
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .bristol-btn:active { opacity: 0.7; }
+
+        .bristol-btn[data-t="1"], .bristol-btn[data-t="2"] { border-color: #4a2e2e; }
+        .bristol-btn[data-t="3"] { border-color: #3a4a28; }
+        .bristol-btn[data-t="4"] { border-color: #2e4a2e; }
+        .bristol-btn[data-t="5"] { border-color: #4a4a28; }
+        .bristol-btn[data-t="6"], .bristol-btn[data-t="7"] { border-color: #4a3020; }
+
+        .bristol-btn.active[data-t="1"],
+        .bristol-btn.active[data-t="2"] { background: rgba(138,74,74,.28); border-color: #a06060; color: #d08080; }
+        .bristol-btn.active[data-t="3"] { background: rgba(100,130,60,.28); border-color: #90a870; color: #b8d090; }
+        .bristol-btn.active[data-t="4"] { background: rgba(60,120,60,.28); border-color: #5c8a5c; color: #80c080; }
+        .bristol-btn.active[data-t="5"] { background: rgba(130,120,50,.28); border-color: #a8a070; color: #d0c880; }
+        .bristol-btn.active[data-t="6"],
+        .bristol-btn.active[data-t="7"] { background: rgba(160,100,50,.28); border-color: #c0805a; color: #e0a080; }
+
+        .bristol-hint {
+            margin-top: 7px;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            min-height: 16px;
+        }
+
+        /* SETTINGS PANEL */
+        #settings-panel {
+            display: none;
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        #settings-panel.open { display: block; }
+
+        .settings-title {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .backup-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .backup-btn {
+            flex: 1;
+            padding: 11px;
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: opacity 0.15s;
+        }
+
+        .backup-btn:active { opacity: 0.7; }
+
+        .backup-btn.export {
+            background: var(--teal-dim);
+            color: #b0e0d8;
+            border-color: var(--teal-dim);
+        }
+
+        .backup-btn.import {
+            background: var(--bg-input);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <button class="active" onclick="showView('morgenmad')">Morgenmad</button>
+    <button onclick="showView('frokost')">Frokost</button>
+    <button onclick="showView('eftermiddag')">Eftermiddag</button>
+</nav>
+
+<div class="date-nav">
+    <button onclick="changeDate(-1)">&#8249;</button>
+    <span id="date-nav-label"></span>
+    <button onclick="changeDate(1)">&#8250;</button>
+    <button id="today-btn" class="hidden" onclick="goToday()">I dag</button>
+    <button id="settings-btn" onclick="toggleSettings()" title="Backup">&#9881;</button>
+</div>
+
+<div id="settings-panel">
+    <div class="settings-title">Backup</div>
+    <div class="backup-row">
+        <button class="backup-btn export" onclick="exportData()">Gem backup til fil</button>
+        <button class="backup-btn import" onclick="document.getElementById('import-file').click()">Gendan fra fil</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+</div>
+
+<main>
+
+    <!-- MORGENMAD -->
+    <div class="view active" id="view-morgenmad">
+        <div class="section">
+            <div class="section-label">Morgenmad <span class="save-dot" id="dot-morgenmad"></span></div>
+            <textarea class="food-input" id="morgenmad-mad" placeholder="Hvad spiste du til morgenmad?"></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-label">Fysisk reaktion</div>
+            <div class="chip-group" id="morgenmad-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Luft/gasser</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Hævelse</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <div class="section-label">Bristol Stool Scale</div>
+            <div class="bristol-row" id="morgenmad-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('morgenmad',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('morgenmad',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('morgenmad',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('morgenmad',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('morgenmad',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('morgenmad',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('morgenmad',7)">7</button>
+            </div>
+            <div class="bristol-hint" id="morgenmad-bristol-hint"></div>
+        </div>
+    </div>
+
+    <!-- FROKOST -->
+    <div class="view" id="view-frokost">
+        <div class="section">
+            <div class="section-label">Frokost <span class="save-dot" id="dot-frokost"></span></div>
+            <textarea class="food-input" id="frokost-mad" placeholder="Hvad spiste du til frokost?"></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-label">Fysisk reaktion</div>
+            <div class="chip-group" id="frokost-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Luft/gasser</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Hævelse</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <div class="section-label">Bristol Stool Scale</div>
+            <div class="bristol-row" id="frokost-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('frokost',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('frokost',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('frokost',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('frokost',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('frokost',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('frokost',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('frokost',7)">7</button>
+            </div>
+            <div class="bristol-hint" id="frokost-bristol-hint"></div>
+        </div>
+    </div>
+
+    <!-- EFTERMIDDAG -->
+    <div class="view" id="view-eftermiddag">
+        <div class="section">
+            <div class="section-label">Eftermiddag <span class="save-dot" id="dot-eftermiddag"></span></div>
+            <textarea class="food-input" id="eftermiddag-mad" placeholder="Hvad spiste/drak du om eftermiddagen?"></textarea>
+        </div>
+
+        <div class="section">
+            <div class="section-label">Fysisk reaktion</div>
+            <div class="chip-group" id="eftermiddag-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Luft/gasser</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'eftermiddag-reaktioner','eftermiddag')">Hævelse</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <div class="section-label">Bristol Stool Scale</div>
+            <div class="bristol-row" id="eftermiddag-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('eftermiddag',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('eftermiddag',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('eftermiddag',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('eftermiddag',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('eftermiddag',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('eftermiddag',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('eftermiddag',7)">7</button>
+            </div>
+            <div class="bristol-hint" id="eftermiddag-bristol-hint"></div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    const BRISTOL_HINTS = {
+        1: 'Separate hårde klumper — svær forstoppelse',
+        2: 'Pølseformet, klumpet — let forstoppelse',
+        3: 'Pølseformet med revner — let fast',
+        4: 'Glat, blød pølse — idealt',
+        5: 'Bløde klumper — let mod løs',
+        6: 'Løse stykker — begyndende diarré',
+        7: 'Vandigt — diarré'
+    };
+
+    const MEALS = ['morgenmad', 'frokost', 'eftermiddag'];
+    const KEY_PREFIX = 'longevity-';
+
+    let currentDate = dateStr(new Date());
+    let data = {};
+
+    function dateStr(d) {
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function formatDateLabel(str) {
+        const [y, m, day] = str.split('-').map(Number);
+        const d = new Date(y, m - 1, day);
+        const today = dateStr(new Date());
+        const yest = new Date(); yest.setDate(yest.getDate() - 1);
+        const yStr = dateStr(yest);
+        const months = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+        const days   = ['Søndag','Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag'];
+        if (str === today) return `I dag · ${day}. ${months[m-1]}`;
+        if (str === yStr)  return `I går · ${day}. ${months[m-1]}`;
+        return `${days[d.getDay()]} · ${day}. ${months[m-1]} ${y}`;
+    }
+
+    function loadData() {
+        const raw = localStorage.getItem(KEY_PREFIX + currentDate);
+        data = raw ? JSON.parse(raw) : defaultData();
+    }
+
+    function saveData(meal) {
+        localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data));
+        flashDot(meal);
+    }
+
+    function defaultData() {
+        const m = () => ({ mad: '', reaktioner: [], bristol: null });
+        return { morgenmad: m(), frokost: m(), eftermiddag: m() };
+    }
+
+    function flashDot(meal) {
+        const dot = document.getElementById('dot-' + meal);
+        if (!dot) return;
+        dot.classList.add('visible');
+        setTimeout(() => dot.classList.remove('visible'), 1200);
+    }
+
+    /* VIEW */
+    function showView(name) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('view-' + name).classList.add('active');
+        document.querySelector(`nav button[onclick="showView('${name}')"]`).classList.add('active');
+    }
+
+    /* DATE */
+    function changeDate(delta) {
+        const [y, m, d] = currentDate.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        dt.setDate(dt.getDate() + delta);
+        currentDate = dateStr(dt);
+        updateDateNav();
+        loadData();
+        renderAll();
+    }
+
+    function goToday() {
+        currentDate = dateStr(new Date());
+        updateDateNav();
+        loadData();
+        renderAll();
+    }
+
+    function updateDateNav() {
+        document.getElementById('date-nav-label').textContent = formatDateLabel(currentDate);
+        document.getElementById('today-btn').classList.toggle('hidden', currentDate === dateStr(new Date()));
+    }
+
+    /* SETTINGS */
+    function toggleSettings() {
+        document.getElementById('settings-panel').classList.toggle('open');
+    }
+
+    /* BACKUP */
+    function exportData() {
+        const out = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k.startsWith(KEY_PREFIX)) out[k] = localStorage.getItem(k);
+        }
+        const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `longevity-backup-${dateStr(new Date())}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const obj = JSON.parse(e.target.result);
+                let count = 0;
+                for (const [k, v] of Object.entries(obj)) {
+                    if (k.startsWith(KEY_PREFIX)) { localStorage.setItem(k, v); count++; }
+                }
+                alert(`Backup gendannet — ${count} dage indlæst.`);
+                loadData();
+                renderAll();
+                updateDateNav();
+            } catch {
+                alert('Kunne ikke læse filen. Er det en gyldig backup?');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    /* CHIPS */
+    function toggleReaktion(el, groupId, meal) {
+        const group = document.getElementById(groupId);
+        const val = el.dataset.val;
+        if (val === 'ingen') {
+            const wasActive = el.classList.contains('active');
+            group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if (!wasActive) el.classList.add('active');
+            data[meal].reaktioner = wasActive ? [] : ['ingen'];
+        } else {
+            group.querySelector('.chip.ingen').classList.remove('active');
+            el.classList.toggle('active');
+            data[meal].reaktioner = Array.from(group.querySelectorAll('.chip.active'))
+                .map(c => c.dataset.val).filter(v => v !== 'ingen');
+        }
+        saveData(meal);
+    }
+
+    /* BRISTOL */
+    function selectBristol(meal, type) {
+        const row = document.getElementById(meal + '-bristol');
+        const wasSame = data[meal].bristol === type;
+        row.querySelectorAll('.bristol-btn').forEach(b => b.classList.remove('active'));
+        if (!wasSame) {
+            row.querySelector(`[data-t="${type}"]`).classList.add('active');
+            data[meal].bristol = type;
+            document.getElementById(meal + '-bristol-hint').textContent = BRISTOL_HINTS[type];
+        } else {
+            data[meal].bristol = null;
+            document.getElementById(meal + '-bristol-hint').textContent = '';
+        }
+        saveData(meal);
+    }
+
+    /* RENDER */
+    function renderAll() {
+        MEALS.forEach(meal => {
+            const d = data[meal] || defaultData()[meal];
+            document.getElementById(meal + '-mad').value = d.mad || '';
+
+            document.getElementById(meal + '-reaktioner').querySelectorAll('.chip').forEach(c => {
+                c.classList.toggle('active', (d.reaktioner || []).includes(c.dataset.val));
+            });
+
+            const brow = document.getElementById(meal + '-bristol');
+            brow.querySelectorAll('.bristol-btn').forEach(b => b.classList.remove('active'));
+            const hint = document.getElementById(meal + '-bristol-hint');
+            if (d.bristol) {
+                brow.querySelector(`[data-t="${d.bristol}"]`).classList.add('active');
+                hint.textContent = BRISTOL_HINTS[d.bristol];
+            } else {
+                hint.textContent = '';
+            }
+        });
+    }
+
+    /* INIT */
+    function init() {
+        loadData();
+        updateDateNav();
+        renderAll();
+        MEALS.forEach(meal => {
+            document.getElementById(meal + '-mad').addEventListener('input', function() {
+                data[meal].mad = this.value;
+                saveData(meal);
+            });
+        });
+    }
+
+    init();
+</script>
+</body>
+</html>
