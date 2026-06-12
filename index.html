@@ -564,18 +564,37 @@
     }
 
     function loadData() {
-        const raw = localStorage.getItem(KEY_PREFIX + currentDate);
-        data = raw ? JSON.parse(raw) : defaultData();
+        try {
+            const raw = localStorage.getItem(KEY_PREFIX + currentDate);
+            data = raw ? JSON.parse(raw) : defaultData();
+        } catch (e) {
+            data = defaultData();
+            showStorageWarning();
+        }
     }
 
     function saveData(meal) {
-        localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data));
-        flashDot(meal);
+        try {
+            localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data));
+            flashDot(meal);
+        } catch (e) {
+            showStorageWarning();
+        }
+    }
+
+    let _storageWarnShown = false;
+    function showStorageWarning() {
+        if (_storageWarnShown) return;
+        _storageWarnShown = true;
+        const el = document.createElement('div');
+        el.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#8a4a4a;color:#ffd0d0;font-size:0.8rem;padding:12px 16px;text-align:center;z-index:999;font-family:var(--mono)';
+        el.textContent = 'Data kan ikke gemmes — prøv at åbne siden i et normalt (ikke privat) browservindue.';
+        document.body.appendChild(el);
     }
 
     function defaultData() {
         const m = () => ({ mad: '', reaktioner: [], bristol: null });
-        return { morgenmad: m(), frokost: m(), eftermiddag: m() };
+        return { morgenmad: m(), frokost: m(), snack: m(), aftensmad: m() };
     }
 
     function flashDot(meal) {
@@ -595,6 +614,7 @@
 
     /* DATE */
     function changeDate(delta) {
+        try { localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data)); } catch (e) {}
         const [y, m, d] = currentDate.split('-').map(Number);
         const dt = new Date(y, m - 1, d);
         dt.setDate(dt.getDate() + delta);
@@ -697,7 +717,7 @@
     /* RENDER */
     function renderAll() {
         MEALS.forEach(meal => {
-            const d = data[meal] || defaultData()[meal];
+            const d = data[meal] || { mad: '', reaktioner: [], bristol: null };
             document.getElementById(meal + '-mad').value = d.mad || '';
 
             document.getElementById(meal + '-reaktioner').querySelectorAll('.chip').forEach(c => {
@@ -723,6 +743,7 @@
         renderAll();
         MEALS.forEach(meal => {
             document.getElementById(meal + '-mad').addEventListener('input', function() {
+                if (!data[meal]) data[meal] = { mad: '', reaktioner: [], bristol: null };
                 data[meal].mad = this.value;
                 saveData(meal);
             });
