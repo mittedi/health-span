@@ -55,12 +55,12 @@
 
         nav button {
             flex: 1;
-            padding: 14px 8px;
+            padding: 12px 4px;
             background: none;
             border: none;
             color: var(--text-muted);
             font-family: var(--mono);
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             letter-spacing: 0.04em;
             text-transform: uppercase;
             cursor: pointer;
@@ -81,7 +81,7 @@
             background: var(--bg);
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 46px;
+            top: 40px;
             z-index: 9;
         }
 
@@ -139,6 +139,13 @@
             max-width: 480px;
             margin: 0 auto;
             width: 100%;
+        }
+
+        /* VELVÆRE */
+        .velvare-section {
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
         }
 
         .view { display: none; }
@@ -333,10 +340,12 @@
 <body>
 
 <nav>
-    <button class="active" onclick="showView('morgenmad')">Morgenmad</button>
-    <button onclick="showView('frokost')">Frokost</button>
-    <button onclick="showView('snack')">Snack</button>
-    <button onclick="showView('aftensmad')">Aftensmad</button>
+    <button data-view="morgen" class="active" onclick="showView('morgen')">Morgen</button>
+    <button data-view="snack1" onclick="showView('snack1')">Snack</button>
+    <button data-view="middag" onclick="showView('middag')">Middag</button>
+    <button data-view="snack2" onclick="showView('snack2')">Snack</button>
+    <button data-view="aften" onclick="showView('aften')">Aften</button>
+    <button data-view="snack3" onclick="showView('snack3')">Snack</button>
 </nav>
 
 <div class="date-nav">
@@ -363,27 +372,33 @@
 
 <main>
 
-    <!-- MORGENMAD -->
-    <div class="view active" id="view-morgenmad">
+    <!-- GENEREL VELVÆRE (dagniveau) -->
+    <div class="velvare-section">
+        <div class="section-label">Generel velvære <span class="save-dot" id="dot-velvare"></span></div>
+        <textarea class="food-input" id="velvare-felt" placeholder="Hvordan har du det i dag?"></textarea>
+    </div>
+
+    <!-- MORGEN -->
+    <div class="view active" id="view-morgen">
         <div class="section">
-            <div class="section-label">Morgenmad <span class="save-dot" id="dot-morgenmad"></span></div>
-            <textarea class="food-input" id="morgenmad-mad" placeholder="Hvad spiste du til morgenmad?"></textarea>
+            <div class="section-label">Morgenmad <span class="save-dot" id="dot-morgen"></span></div>
+            <textarea class="food-input" id="morgen-mad" placeholder="Hvad spiste du til morgenmad?"></textarea>
         </div>
 
         <div class="section">
             <div class="section-label">Fysisk reaktion</div>
-            <div class="chip-group" id="morgenmad-reaktioner">
-                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Ingen reaktion</div>
-                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Oppustethed</div>
-                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Luft/gasser</div>
-                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Trykkende følelse</div>
-                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Let ubehag</div>
-                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Smerter</div>
-                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Kramper</div>
-                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Kvalme</div>
-                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Halsbrand</div>
-                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Træthed</div>
-                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'morgenmad-reaktioner','morgenmad')">Hævelse</div>
+            <div class="chip-group" id="morgen-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Trykkende følelse</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'morgen-reaktioner','morgen')">Hævelse</div>
             </div>
         </div>
 
@@ -391,81 +406,48 @@
 
         <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
-            <div class="bristol-row" id="morgenmad-bristol">
-                <button class="bristol-btn" data-t="1" onclick="selectBristol('morgenmad',1)">1</button>
-                <button class="bristol-btn" data-t="2" onclick="selectBristol('morgenmad',2)">2</button>
-                <button class="bristol-btn" data-t="3" onclick="selectBristol('morgenmad',3)">3</button>
-                <button class="bristol-btn" data-t="4" onclick="selectBristol('morgenmad',4)">4</button>
-                <button class="bristol-btn" data-t="5" onclick="selectBristol('morgenmad',5)">5</button>
-                <button class="bristol-btn" data-t="6" onclick="selectBristol('morgenmad',6)">6</button>
-                <button class="bristol-btn" data-t="7" onclick="selectBristol('morgenmad',7)">7</button>
+            <div class="bristol-row" id="morgen-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('morgen',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('morgen',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('morgen',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('morgen',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('morgen',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('morgen',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('morgen',7)">7</button>
             </div>
-            <div class="bristol-hint" id="morgenmad-bristol-hint"></div>
+            <div class="bristol-hint" id="morgen-bristol-hint"></div>
         </div>
     </div>
 
-    <!-- FROKOST -->
-    <div class="view" id="view-frokost">
+    <!-- SNACK 1 -->
+    <div class="view" id="view-snack1">
         <div class="section">
-            <div class="section-label">Frokost <span class="save-dot" id="dot-frokost"></span></div>
-            <textarea class="food-input" id="frokost-mad" placeholder="Hvad spiste du til frokost?"></textarea>
-        </div>
-
-        <div class="section">
-            <div class="section-label">Fysisk reaktion</div>
-            <div class="chip-group" id="frokost-reaktioner">
-                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Ingen reaktion</div>
-                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Oppustethed</div>
-                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Luft/gasser</div>
-                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Trykkende følelse</div>
-                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Let ubehag</div>
-                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Smerter</div>
-                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Kramper</div>
-                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Kvalme</div>
-                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Halsbrand</div>
-                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Træthed</div>
-                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'frokost-reaktioner','frokost')">Hævelse</div>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section">
-            <div class="section-label">Bristol Stool Scale</div>
-            <div class="bristol-row" id="frokost-bristol">
-                <button class="bristol-btn" data-t="1" onclick="selectBristol('frokost',1)">1</button>
-                <button class="bristol-btn" data-t="2" onclick="selectBristol('frokost',2)">2</button>
-                <button class="bristol-btn" data-t="3" onclick="selectBristol('frokost',3)">3</button>
-                <button class="bristol-btn" data-t="4" onclick="selectBristol('frokost',4)">4</button>
-                <button class="bristol-btn" data-t="5" onclick="selectBristol('frokost',5)">5</button>
-                <button class="bristol-btn" data-t="6" onclick="selectBristol('frokost',6)">6</button>
-                <button class="bristol-btn" data-t="7" onclick="selectBristol('frokost',7)">7</button>
-            </div>
-            <div class="bristol-hint" id="frokost-bristol-hint"></div>
+            <div class="section-label">Snack <span class="save-dot" id="dot-snack1"></span></div>
+            <textarea class="food-input" id="snack1-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
     </div>
 
-    <!-- SNACK -->
-    <div class="view" id="view-snack">
+    <!-- MIDDAG -->
+    <div class="view" id="view-middag">
         <div class="section">
-            <div class="section-label">Snack <span class="save-dot" id="dot-snack"></span></div>
-            <textarea class="food-input" id="snack-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
+            <div class="section-label">Middag <span class="save-dot" id="dot-middag"></span></div>
+            <textarea class="food-input" id="middag-mad" placeholder="Hvad spiste du til middag?"></textarea>
         </div>
 
         <div class="section">
             <div class="section-label">Fysisk reaktion</div>
-            <div class="chip-group" id="snack-reaktioner">
-                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Ingen reaktion</div>
-                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Oppustethed</div>
-                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Luft/gasser</div>
-                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Trykkende følelse</div>
-                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Let ubehag</div>
-                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Smerter</div>
-                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Kramper</div>
-                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Kvalme</div>
-                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Halsbrand</div>
-                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Træthed</div>
-                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'snack-reaktioner','snack')">Hævelse</div>
+            <div class="chip-group" id="middag-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Trykkende følelse</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'middag-reaktioner','middag')">Hævelse</div>
             </div>
         </div>
 
@@ -473,40 +455,48 @@
 
         <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
-            <div class="bristol-row" id="snack-bristol">
-                <button class="bristol-btn" data-t="1" onclick="selectBristol('snack',1)">1</button>
-                <button class="bristol-btn" data-t="2" onclick="selectBristol('snack',2)">2</button>
-                <button class="bristol-btn" data-t="3" onclick="selectBristol('snack',3)">3</button>
-                <button class="bristol-btn" data-t="4" onclick="selectBristol('snack',4)">4</button>
-                <button class="bristol-btn" data-t="5" onclick="selectBristol('snack',5)">5</button>
-                <button class="bristol-btn" data-t="6" onclick="selectBristol('snack',6)">6</button>
-                <button class="bristol-btn" data-t="7" onclick="selectBristol('snack',7)">7</button>
+            <div class="bristol-row" id="middag-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('middag',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('middag',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('middag',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('middag',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('middag',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('middag',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('middag',7)">7</button>
             </div>
-            <div class="bristol-hint" id="snack-bristol-hint"></div>
+            <div class="bristol-hint" id="middag-bristol-hint"></div>
         </div>
     </div>
 
-    <!-- AFTENSMAD -->
-    <div class="view" id="view-aftensmad">
+    <!-- SNACK 2 -->
+    <div class="view" id="view-snack2">
         <div class="section">
-            <div class="section-label">Aftensmad <span class="save-dot" id="dot-aftensmad"></span></div>
-            <textarea class="food-input" id="aftensmad-mad" placeholder="Hvad spiste du til aftensmad?"></textarea>
+            <div class="section-label">Snack <span class="save-dot" id="dot-snack2"></span></div>
+            <textarea class="food-input" id="snack2-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
+        </div>
+    </div>
+
+    <!-- AFTEN -->
+    <div class="view" id="view-aften">
+        <div class="section">
+            <div class="section-label">Aftensmad <span class="save-dot" id="dot-aften"></span></div>
+            <textarea class="food-input" id="aften-mad" placeholder="Hvad spiste du til aftensmad?"></textarea>
         </div>
 
         <div class="section">
             <div class="section-label">Fysisk reaktion</div>
-            <div class="chip-group" id="aftensmad-reaktioner">
-                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Ingen reaktion</div>
-                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Oppustethed</div>
-                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Luft/gasser</div>
-                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Trykkende følelse</div>
-                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Let ubehag</div>
-                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Smerter</div>
-                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Kramper</div>
-                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Kvalme</div>
-                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Halsbrand</div>
-                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Træthed</div>
-                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'aftensmad-reaktioner','aftensmad')">Hævelse</div>
+            <div class="chip-group" id="aften-reaktioner">
+                <div class="chip ingen" data-val="ingen" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Ingen reaktion</div>
+                <div class="chip" data-val="oppustethed" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Oppustethed</div>
+                <div class="chip" data-val="luft" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Luft/gasser</div>
+                <div class="chip" data-val="trykkende" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Trykkende følelse</div>
+                <div class="chip" data-val="ubehag" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Let ubehag</div>
+                <div class="chip" data-val="smerter" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Smerter</div>
+                <div class="chip" data-val="kramper" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Kramper</div>
+                <div class="chip" data-val="kvalme" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Kvalme</div>
+                <div class="chip" data-val="halsbrand" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Halsbrand</div>
+                <div class="chip" data-val="traethed" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Træthed</div>
+                <div class="chip" data-val="haevelse" onclick="toggleReaktion(this,'aften-reaktioner','aften')">Hævelse</div>
             </div>
         </div>
 
@@ -514,16 +504,24 @@
 
         <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
-            <div class="bristol-row" id="aftensmad-bristol">
-                <button class="bristol-btn" data-t="1" onclick="selectBristol('aftensmad',1)">1</button>
-                <button class="bristol-btn" data-t="2" onclick="selectBristol('aftensmad',2)">2</button>
-                <button class="bristol-btn" data-t="3" onclick="selectBristol('aftensmad',3)">3</button>
-                <button class="bristol-btn" data-t="4" onclick="selectBristol('aftensmad',4)">4</button>
-                <button class="bristol-btn" data-t="5" onclick="selectBristol('aftensmad',5)">5</button>
-                <button class="bristol-btn" data-t="6" onclick="selectBristol('aftensmad',6)">6</button>
-                <button class="bristol-btn" data-t="7" onclick="selectBristol('aftensmad',7)">7</button>
+            <div class="bristol-row" id="aften-bristol">
+                <button class="bristol-btn" data-t="1" onclick="selectBristol('aften',1)">1</button>
+                <button class="bristol-btn" data-t="2" onclick="selectBristol('aften',2)">2</button>
+                <button class="bristol-btn" data-t="3" onclick="selectBristol('aften',3)">3</button>
+                <button class="bristol-btn" data-t="4" onclick="selectBristol('aften',4)">4</button>
+                <button class="bristol-btn" data-t="5" onclick="selectBristol('aften',5)">5</button>
+                <button class="bristol-btn" data-t="6" onclick="selectBristol('aften',6)">6</button>
+                <button class="bristol-btn" data-t="7" onclick="selectBristol('aften',7)">7</button>
             </div>
-            <div class="bristol-hint" id="aftensmad-bristol-hint"></div>
+            <div class="bristol-hint" id="aften-bristol-hint"></div>
+        </div>
+    </div>
+
+    <!-- SNACK 3 -->
+    <div class="view" id="view-snack3">
+        <div class="section">
+            <div class="section-label">Snack <span class="save-dot" id="dot-snack3"></span></div>
+            <textarea class="food-input" id="snack3-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
     </div>
 
@@ -540,8 +538,10 @@
         7: 'Vandigt — diarré'
     };
 
-    const MEALS = ['morgenmad', 'frokost', 'snack', 'aftensmad'];
-    const KEY_PREFIX = 'longevity-';
+    const ALL_MEALS   = ['morgen', 'snack1', 'middag', 'snack2', 'aften', 'snack3'];
+    const FULL_MEALS  = ['morgen', 'middag', 'aften'];
+    const SNACK_MEALS = ['snack1', 'snack2', 'snack3'];
+    const KEY_PREFIX  = 'longevity-';
 
     let currentDate = dateStr(new Date());
     let data = {};
@@ -563,20 +563,54 @@
         return `${days[d.getDay()]} · ${day}. ${months[m-1]} ${y}`;
     }
 
+    function defaultMeal() {
+        return { mad: '', reaktioner: [], bristol: null };
+    }
+
+    function defaultData() {
+        return {
+            velvare: '',
+            morgen:  defaultMeal(),
+            snack1:  { mad: '' },
+            middag:  defaultMeal(),
+            snack2:  { mad: '' },
+            aften:   defaultMeal(),
+            snack3:  { mad: '' }
+        };
+    }
+
+    /* Migrate data saved with old key names (morgenmad, frokost, snack, aftensmad) */
+    function migrateData(parsed) {
+        if (!parsed) return null;
+        if ('morgenmad' in parsed || 'frokost' in parsed || 'aftensmad' in parsed) {
+            return {
+                velvare: parsed.velvare || '',
+                morgen:  parsed.morgenmad || defaultMeal(),
+                snack1:  { mad: parsed.snack?.mad || '' },
+                middag:  parsed.frokost   || defaultMeal(),
+                snack2:  { mad: '' },
+                aften:   parsed.aftensmad || defaultMeal(),
+                snack3:  { mad: '' }
+            };
+        }
+        return parsed;
+    }
+
     function loadData() {
         try {
             const raw = localStorage.getItem(KEY_PREFIX + currentDate);
-            data = raw ? JSON.parse(raw) : defaultData();
+            const parsed = raw ? JSON.parse(raw) : null;
+            data = migrateData(parsed) || defaultData();
         } catch (e) {
             data = defaultData();
             showStorageWarning();
         }
     }
 
-    function saveData(meal) {
+    function saveData(key) {
         try {
             localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data));
-            flashDot(meal);
+            flashDot(key);
         } catch (e) {
             showStorageWarning();
         }
@@ -592,13 +626,8 @@
         document.body.appendChild(el);
     }
 
-    function defaultData() {
-        const m = () => ({ mad: '', reaktioner: [], bristol: null });
-        return { morgenmad: m(), frokost: m(), snack: m(), aftensmad: m() };
-    }
-
-    function flashDot(meal) {
-        const dot = document.getElementById('dot-' + meal);
+    function flashDot(key) {
+        const dot = document.getElementById('dot-' + key);
         if (!dot) return;
         dot.classList.add('visible');
         setTimeout(() => dot.classList.remove('visible'), 1200);
@@ -609,7 +638,7 @@
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
         document.getElementById('view-' + name).classList.add('active');
-        document.querySelector(`nav button[onclick="showView('${name}')"]`).classList.add('active');
+        document.querySelector(`nav button[data-view="${name}"]`).classList.add('active');
     }
 
     /* DATE */
@@ -716,8 +745,10 @@
 
     /* RENDER */
     function renderAll() {
-        MEALS.forEach(meal => {
-            const d = data[meal] || { mad: '', reaktioner: [], bristol: null };
+        document.getElementById('velvare-felt').value = data.velvare || '';
+
+        FULL_MEALS.forEach(meal => {
+            const d = data[meal] || defaultMeal();
             document.getElementById(meal + '-mad').value = d.mad || '';
 
             document.getElementById(meal + '-reaktioner').querySelectorAll('.chip').forEach(c => {
@@ -734,6 +765,10 @@
                 hint.textContent = '';
             }
         });
+
+        SNACK_MEALS.forEach(meal => {
+            document.getElementById(meal + '-mad').value = (data[meal] && data[meal].mad) || '';
+        });
     }
 
     /* INIT */
@@ -741,9 +776,23 @@
         loadData();
         updateDateNav();
         renderAll();
-        MEALS.forEach(meal => {
+
+        document.getElementById('velvare-felt').addEventListener('input', function() {
+            data.velvare = this.value;
+            saveData('velvare');
+        });
+
+        FULL_MEALS.forEach(meal => {
             document.getElementById(meal + '-mad').addEventListener('input', function() {
-                if (!data[meal]) data[meal] = { mad: '', reaktioner: [], bristol: null };
+                if (!data[meal]) data[meal] = defaultMeal();
+                data[meal].mad = this.value;
+                saveData(meal);
+            });
+        });
+
+        SNACK_MEALS.forEach(meal => {
+            document.getElementById(meal + '-mad').addEventListener('input', function() {
+                if (!data[meal]) data[meal] = { mad: '' };
                 data[meal].mad = this.value;
                 saveData(meal);
             });
