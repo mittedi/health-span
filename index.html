@@ -141,13 +141,6 @@
             width: 100%;
         }
 
-        /* VELVÆRE */
-        .velvare-section {
-            margin-bottom: 28px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
         .view { display: none; }
         .view.active { display: block; }
 
@@ -237,6 +230,47 @@
             height: 1px;
             background: var(--border);
             margin: 4px 0 28px;
+        }
+
+        /* VELVÆRE SCALE */
+        .velvare-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .velvare-btn {
+            flex: 1;
+            padding: 14px 8px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .velvare-btn:active { opacity: 0.7; }
+
+        .velvare-btn[data-v="1"] { border-color: #4a2e2e; }
+        .velvare-btn[data-v="2"] { border-color: #4a4428; }
+        .velvare-btn[data-v="3"] { border-color: #2e4a2e; }
+
+        .velvare-btn.active[data-v="1"] { background: rgba(138,74,74,.28); border-color: #a06060; color: #d08080; }
+        .velvare-btn.active[data-v="2"] { background: rgba(130,120,50,.28); border-color: #a8a070; color: #d0c880; }
+        .velvare-btn.active[data-v="3"] { background: rgba(60,120,60,.28); border-color: #5c8a5c; color: #80c080; }
+
+        .velvare-hint {
+            margin-top: 7px;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            min-height: 16px;
         }
 
         /* BRISTOL */
@@ -369,12 +403,6 @@
 
 <main>
 
-    <!-- GENEREL VELVÆRE (dagniveau) -->
-    <div class="velvare-section">
-        <div class="section-label">Generel velvære <span class="save-dot" id="dot-velvare"></span></div>
-        <textarea class="food-input" id="velvare-felt" placeholder="Hvordan har du det i dag?"></textarea>
-    </div>
-
     <!-- MORGEN -->
     <div class="view active" id="view-morgen">
         <div class="section">
@@ -400,6 +428,16 @@
         </div>
 
         <div class="divider"></div>
+
+        <div class="section">
+            <div class="section-label">Generel velvære</div>
+            <div class="velvare-row" id="morgen-velvare-row">
+                <button class="velvare-btn" data-v="1" onclick="selectVelvare(1)">1</button>
+                <button class="velvare-btn" data-v="2" onclick="selectVelvare(2)">2</button>
+                <button class="velvare-btn" data-v="3" onclick="selectVelvare(3)">3</button>
+            </div>
+            <div class="velvare-hint" id="morgen-velvare-hint"></div>
+        </div>
 
         <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
@@ -448,6 +486,16 @@
         <div class="divider"></div>
 
         <div class="section">
+            <div class="section-label">Generel velvære</div>
+            <div class="velvare-row" id="middag-velvare-row">
+                <button class="velvare-btn" data-v="1" onclick="selectVelvare(1)">1</button>
+                <button class="velvare-btn" data-v="2" onclick="selectVelvare(2)">2</button>
+                <button class="velvare-btn" data-v="3" onclick="selectVelvare(3)">3</button>
+            </div>
+            <div class="velvare-hint" id="middag-velvare-hint"></div>
+        </div>
+
+        <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
             <div class="bristol-row" id="middag-bristol">
                 <button class="bristol-btn" data-t="1" onclick="selectBristol('middag',1)">1</button>
@@ -494,6 +542,16 @@
         <div class="divider"></div>
 
         <div class="section">
+            <div class="section-label">Generel velvære</div>
+            <div class="velvare-row" id="aften-velvare-row">
+                <button class="velvare-btn" data-v="1" onclick="selectVelvare(1)">1</button>
+                <button class="velvare-btn" data-v="2" onclick="selectVelvare(2)">2</button>
+                <button class="velvare-btn" data-v="3" onclick="selectVelvare(3)">3</button>
+            </div>
+            <div class="velvare-hint" id="aften-velvare-hint"></div>
+        </div>
+
+        <div class="section">
             <div class="section-label">Bristol Stool Scale</div>
             <div class="bristol-row" id="aften-bristol">
                 <button class="bristol-btn" data-t="1" onclick="selectBristol('aften',1)">1</button>
@@ -526,6 +584,12 @@
         7: 'Vandigt — diarré'
     };
 
+    const VELVARE_HINTS = {
+        1: 'Ikke særlig godt',
+        2: 'OK',
+        3: 'Fantastisk følelse i kroppen'
+    };
+
     const MEALS = ['morgen', 'middag', 'aften'];
     const KEY_PREFIX = 'longevity-';
 
@@ -555,7 +619,7 @@
 
     function defaultData() {
         return {
-            velvare: '',
+            velvare: null,
             morgen: defaultMeal(),
             middag: defaultMeal(),
             aften:  defaultMeal()
@@ -566,24 +630,29 @@
     function migrateData(parsed) {
         if (!parsed) return null;
 
-        // Very old format: morgenmad/frokost/aftensmad keys
+        // Very old format: morgenmad/frokost/aftensmad
         if ('morgenmad' in parsed || 'frokost' in parsed || 'aftensmad' in parsed) {
             return {
-                velvare: parsed.velvare || '',
+                velvare: null,
                 morgen: { ...(parsed.morgenmad || defaultMeal()), snack: parsed.snack1?.mad || parsed.snack?.mad || '' },
                 middag: { ...(parsed.frokost   || defaultMeal()), snack: parsed.snack2?.mad || '' },
                 aften:  { ...(parsed.aftensmad  || defaultMeal()), snack: parsed.snack3?.mad || '' }
             };
         }
 
-        // 6-tab format: morgen/snack1/middag/snack2/aften/snack3
+        // 6-tab format: snack1/snack2/snack3 as separate keys
         if ('snack1' in parsed || 'snack2' in parsed || 'snack3' in parsed) {
             return {
-                velvare: parsed.velvare || '',
+                velvare: null,
                 morgen: { ...(parsed.morgen || defaultMeal()), snack: parsed.snack1?.mad || '' },
                 middag: { ...(parsed.middag || defaultMeal()), snack: parsed.snack2?.mad || '' },
                 aften:  { ...(parsed.aften  || defaultMeal()), snack: parsed.snack3?.mad || '' }
             };
+        }
+
+        // Previous format: velvare was a string, now null/number
+        if (typeof parsed.velvare === 'string') {
+            parsed.velvare = null;
         }
 
         return parsed;
@@ -736,9 +805,27 @@
         saveData(meal);
     }
 
+    /* VELVÆRE — day-level, synced across all tabs */
+    function selectVelvare(val) {
+        const wasSame = data.velvare === val;
+        data.velvare = wasSame ? null : val;
+        renderVelvare();
+        saveData('velvare');
+    }
+
+    function renderVelvare() {
+        MEALS.forEach(meal => {
+            document.getElementById(meal + '-velvare-row').querySelectorAll('.velvare-btn').forEach(b => {
+                b.classList.toggle('active', Number(b.dataset.v) === data.velvare);
+            });
+            document.getElementById(meal + '-velvare-hint').textContent =
+                data.velvare ? VELVARE_HINTS[data.velvare] : '';
+        });
+    }
+
     /* RENDER */
     function renderAll() {
-        document.getElementById('velvare-felt').value = data.velvare || '';
+        renderVelvare();
 
         MEALS.forEach(meal => {
             const d = data[meal] || defaultMeal();
@@ -766,11 +853,6 @@
         loadData();
         updateDateNav();
         renderAll();
-
-        document.getElementById('velvare-felt').addEventListener('input', function() {
-            data.velvare = this.value;
-            saveData('velvare');
-        });
 
         MEALS.forEach(meal => {
             document.getElementById(meal + '-mad').addEventListener('input', function() {
