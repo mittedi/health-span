@@ -55,12 +55,12 @@
 
         nav button {
             flex: 1;
-            padding: 12px 4px;
+            padding: 14px 8px;
             background: none;
             border: none;
             color: var(--text-muted);
             font-family: var(--mono);
-            font-size: 0.65rem;
+            font-size: 0.72rem;
             letter-spacing: 0.04em;
             text-transform: uppercase;
             cursor: pointer;
@@ -81,7 +81,7 @@
             background: var(--bg);
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 40px;
+            top: 46px;
             z-index: 9;
         }
 
@@ -341,11 +341,8 @@
 
 <nav>
     <button data-view="morgen" class="active" onclick="showView('morgen')">Morgen</button>
-    <button data-view="snack1" onclick="showView('snack1')">Snack</button>
     <button data-view="middag" onclick="showView('middag')">Middag</button>
-    <button data-view="snack2" onclick="showView('snack2')">Snack</button>
     <button data-view="aften" onclick="showView('aften')">Aften</button>
-    <button data-view="snack3" onclick="showView('snack3')">Snack</button>
 </nav>
 
 <div class="date-nav">
@@ -417,13 +414,10 @@
             </div>
             <div class="bristol-hint" id="morgen-bristol-hint"></div>
         </div>
-    </div>
 
-    <!-- SNACK 1 -->
-    <div class="view" id="view-snack1">
         <div class="section">
-            <div class="section-label">Snack <span class="save-dot" id="dot-snack1"></span></div>
-            <textarea class="food-input" id="snack1-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
+            <div class="section-label">Snack</div>
+            <textarea class="food-input" id="morgen-snack" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
     </div>
 
@@ -466,13 +460,10 @@
             </div>
             <div class="bristol-hint" id="middag-bristol-hint"></div>
         </div>
-    </div>
 
-    <!-- SNACK 2 -->
-    <div class="view" id="view-snack2">
         <div class="section">
-            <div class="section-label">Snack <span class="save-dot" id="dot-snack2"></span></div>
-            <textarea class="food-input" id="snack2-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
+            <div class="section-label">Snack</div>
+            <textarea class="food-input" id="middag-snack" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
     </div>
 
@@ -515,13 +506,10 @@
             </div>
             <div class="bristol-hint" id="aften-bristol-hint"></div>
         </div>
-    </div>
 
-    <!-- SNACK 3 -->
-    <div class="view" id="view-snack3">
         <div class="section">
-            <div class="section-label">Snack <span class="save-dot" id="dot-snack3"></span></div>
-            <textarea class="food-input" id="snack3-mad" placeholder="Hvad spiste/drak du som snack?"></textarea>
+            <div class="section-label">Snack</div>
+            <textarea class="food-input" id="aften-snack" placeholder="Hvad spiste/drak du som snack?"></textarea>
         </div>
     </div>
 
@@ -538,10 +526,8 @@
         7: 'Vandigt — diarré'
     };
 
-    const ALL_MEALS   = ['morgen', 'snack1', 'middag', 'snack2', 'aften', 'snack3'];
-    const FULL_MEALS  = ['morgen', 'middag', 'aften'];
-    const SNACK_MEALS = ['snack1', 'snack2', 'snack3'];
-    const KEY_PREFIX  = 'longevity-';
+    const MEALS = ['morgen', 'middag', 'aften'];
+    const KEY_PREFIX = 'longevity-';
 
     let currentDate = dateStr(new Date());
     let data = {};
@@ -564,35 +550,42 @@
     }
 
     function defaultMeal() {
-        return { mad: '', reaktioner: [], bristol: null };
+        return { mad: '', reaktioner: [], bristol: null, snack: '' };
     }
 
     function defaultData() {
         return {
             velvare: '',
-            morgen:  defaultMeal(),
-            snack1:  { mad: '' },
-            middag:  defaultMeal(),
-            snack2:  { mad: '' },
-            aften:   defaultMeal(),
-            snack3:  { mad: '' }
+            morgen: defaultMeal(),
+            middag: defaultMeal(),
+            aften:  defaultMeal()
         };
     }
 
-    /* Migrate data saved with old key names (morgenmad, frokost, snack, aftensmad) */
+    /* Migrate data from older formats */
     function migrateData(parsed) {
         if (!parsed) return null;
+
+        // Very old format: morgenmad/frokost/aftensmad keys
         if ('morgenmad' in parsed || 'frokost' in parsed || 'aftensmad' in parsed) {
             return {
                 velvare: parsed.velvare || '',
-                morgen:  parsed.morgenmad || defaultMeal(),
-                snack1:  { mad: parsed.snack?.mad || '' },
-                middag:  parsed.frokost   || defaultMeal(),
-                snack2:  { mad: '' },
-                aften:   parsed.aftensmad || defaultMeal(),
-                snack3:  { mad: '' }
+                morgen: { ...(parsed.morgenmad || defaultMeal()), snack: parsed.snack1?.mad || parsed.snack?.mad || '' },
+                middag: { ...(parsed.frokost   || defaultMeal()), snack: parsed.snack2?.mad || '' },
+                aften:  { ...(parsed.aftensmad  || defaultMeal()), snack: parsed.snack3?.mad || '' }
             };
         }
+
+        // 6-tab format: morgen/snack1/middag/snack2/aften/snack3
+        if ('snack1' in parsed || 'snack2' in parsed || 'snack3' in parsed) {
+            return {
+                velvare: parsed.velvare || '',
+                morgen: { ...(parsed.morgen || defaultMeal()), snack: parsed.snack1?.mad || '' },
+                middag: { ...(parsed.middag || defaultMeal()), snack: parsed.snack2?.mad || '' },
+                aften:  { ...(parsed.aften  || defaultMeal()), snack: parsed.snack3?.mad || '' }
+            };
+        }
+
         return parsed;
     }
 
@@ -607,10 +600,10 @@
         }
     }
 
-    function saveData(key) {
+    function saveData(meal) {
         try {
             localStorage.setItem(KEY_PREFIX + currentDate, JSON.stringify(data));
-            flashDot(key);
+            flashDot(meal);
         } catch (e) {
             showStorageWarning();
         }
@@ -747,9 +740,10 @@
     function renderAll() {
         document.getElementById('velvare-felt').value = data.velvare || '';
 
-        FULL_MEALS.forEach(meal => {
+        MEALS.forEach(meal => {
             const d = data[meal] || defaultMeal();
             document.getElementById(meal + '-mad').value = d.mad || '';
+            document.getElementById(meal + '-snack').value = d.snack || '';
 
             document.getElementById(meal + '-reaktioner').querySelectorAll('.chip').forEach(c => {
                 c.classList.toggle('active', (d.reaktioner || []).includes(c.dataset.val));
@@ -765,10 +759,6 @@
                 hint.textContent = '';
             }
         });
-
-        SNACK_MEALS.forEach(meal => {
-            document.getElementById(meal + '-mad').value = (data[meal] && data[meal].mad) || '';
-        });
     }
 
     /* INIT */
@@ -782,18 +772,15 @@
             saveData('velvare');
         });
 
-        FULL_MEALS.forEach(meal => {
+        MEALS.forEach(meal => {
             document.getElementById(meal + '-mad').addEventListener('input', function() {
                 if (!data[meal]) data[meal] = defaultMeal();
                 data[meal].mad = this.value;
                 saveData(meal);
             });
-        });
-
-        SNACK_MEALS.forEach(meal => {
-            document.getElementById(meal + '-mad').addEventListener('input', function() {
-                if (!data[meal]) data[meal] = { mad: '' };
-                data[meal].mad = this.value;
+            document.getElementById(meal + '-snack').addEventListener('input', function() {
+                if (!data[meal]) data[meal] = defaultMeal();
+                data[meal].snack = this.value;
                 saveData(meal);
             });
         });
